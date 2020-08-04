@@ -24,7 +24,7 @@ def connect_to_serial(port, rate):
 
 def write_new_data(message, api):
 
-    request = requests.post(api+"/new_take", data=message)
+    request = requests.post(api, data=message)
     print(request.json())
 
 
