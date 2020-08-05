@@ -3,30 +3,30 @@ package me.medicationdispenser.api.models;
 import javax.persistence.*;
 
 @Entity
-public class User {
+public class DrugUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false, updatable = false)
-    private long user_id;
+    private long drugUser_id;
 
-    private String user_name;
+    private String drugUser_name;
 
-    public User(String username) {
+    public DrugUser(String username) {
 
-        this.user_name = username;
+        this.drugUser_name = username;
 
     }
 
-    public User() {
+    public DrugUser() {
 
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "user_id='" + user_id + '\'' +
-                ", user_name='" + user_name + '\'' +
+                "user_id='" + drugUser_id + '\'' +
+                ", user_name='" + drugUser_name + '\'' +
                 '}';
     }
 }
