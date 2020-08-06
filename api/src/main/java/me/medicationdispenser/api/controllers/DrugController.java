@@ -5,7 +5,7 @@ import me.medicationdispenser.api.repositories.DrugRepository;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value="/api")
+@RequestMapping("/api")
 public class DrugController {
 
     private final DrugRepository drugRepo;
@@ -16,7 +16,7 @@ public class DrugController {
 
     @GetMapping("/get_drug")
     public Drug getDrug() {
-        return new Drug("test");
+        return new Drug("newDrug");
     }
 
     @PostMapping("/new_take")

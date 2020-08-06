@@ -5,38 +5,19 @@ import lombok.Data;
 import javax.persistence.*;
 
 @Entity
+@Data
 public class Drug {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false, updatable = false)
-    private long drug_id;
+    private long drugId;
 
-    private String drug_name;
+    private String drugName;
 
     public Drug(String drugname) {
 
-        this.drug_name = drugname;
+        this.drugName = drugname;
 
-    }
-
-    public Drug() {
-
-    }
-
-    public String getDrugName() {
-        return drug_name;
-    }
-
-    public void setDrugName(String drug_name) {
-        this.drug_name = drug_name;
-    }
-
-    @Override
-    public String toString() {
-        return "Drug{" +
-                "drug_id='" + drug_id + '\'' +
-                ", drug_name='" + drug_name + '\'' +
-                '}';
     }
 }

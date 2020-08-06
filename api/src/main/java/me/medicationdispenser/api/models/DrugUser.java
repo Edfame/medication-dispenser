@@ -1,32 +1,25 @@
 package me.medicationdispenser.api.models;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 @Entity
+@Data
+@NoArgsConstructor
 public class DrugUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false, updatable = false)
-    private long drugUser_id;
+    private long drugUserId;
 
-    private String drugUser_name;
+    private String drugUserName;
 
     public DrugUser(String username) {
 
-        this.drugUser_name = username;
+        this.drugUserName = username;
 
-    }
-
-    public DrugUser() {
-
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "user_id='" + drugUser_id + '\'' +
-                ", user_name='" + drugUser_name + '\'' +
-                '}';
     }
 }

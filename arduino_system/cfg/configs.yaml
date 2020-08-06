@@ -1,4 +1,4 @@
 arduino:
   port: "/dev/ttyACM0"
   rate: 9600
-  api: "http://localhost:8080/api/new_take"
+  api: "http://localhost:8080/api/new_administration"
