@@ -3,6 +3,9 @@ import serial
 import requests
 from datetime import datetime
 
+#Constants
+closed_hatch = "CLOSED HATCH"
+
 
 # Load the configs from the file provided.
 def load_configs():
@@ -24,7 +27,11 @@ def connect_to_serial(port, rate):
 
 def write_new_data(message, api):
 
-    request = requests.post(api, data=message)
+    obj ={
+        "drugName": message
+    }
+
+    request = requests.post(api, json=obj)
     print(request.json())
 
 
@@ -39,7 +46,8 @@ def run(ser, api):
             decoded_bytes = str(ser_bytes[0:len(ser_bytes) - 1].decode("utf-8"))
             print(instant + " > " + decoded_bytes)
 
-            write_new_data(instant, api)
+            if decoded_bytes == closed_hatch:
+                write_new_data(instant, api)
 
         except:
             print("Keyboard Interrupt")
