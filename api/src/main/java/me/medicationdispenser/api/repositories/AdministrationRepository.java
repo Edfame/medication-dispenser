@@ -10,6 +10,10 @@ import java.util.List;
 @Repository
 public interface AdministrationRepository extends JpaRepository<Administration, AdministrationId> {
 
-    @Override
-    List<Administration> findAllById(AdministrationId administrationIds);
+    //Get all Administrations for the pair (drugId, userId).
+    List<Administration> findAllByAdministrationId_DrugIdAndAdministrationId_UserId(long administrationId_drugId, long administrationId_userId);
+
+    //Get all Administrations for the userId.
+    List<Administration> findAllByAdministrationId_UserId(long administrationId_userId);
+
 }

@@ -2,9 +2,9 @@ package me.medicationdispenser.api.models;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
 import java.io.Serializable;
 import java.util.Calendar;
 
@@ -16,13 +16,7 @@ public class Administration implements Serializable {
     @EmbeddedId
     private AdministrationId administrationId;
 
-    @Column
-    @Temporal(TemporalType.TIMESTAMP)
-    @UpdateTimestamp
-    private Calendar administrationTimestamp;
-
     public Administration(long drugId, long userId, Calendar administrationTimestamp) {
-        this.administrationId = new AdministrationId(drugId, userId);
-        this.administrationTimestamp = administrationTimestamp;
+        this.administrationId = new AdministrationId(drugId, userId, administrationTimestamp);
     }
 }
