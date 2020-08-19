@@ -4,6 +4,8 @@ import me.medicationdispenser.api.models.Drug;
 import me.medicationdispenser.api.repositories.DrugRepository;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api")
 public class DrugController {
@@ -15,15 +17,15 @@ public class DrugController {
     }
 
     @GetMapping("/get_drug")
-    public Drug getDrug() {
-        return new Drug("newDrug");
+    public Optional<Drug> getDrug(@RequestBody Drug drug) {
+
+        return drugRepo.findById(drug.getDrugId());
     }
 
     @PostMapping("/new_take")
     public Drug newTake(@RequestBody Drug newDrugTake) {
 
-        //TODO store new take in the database.
-        newDrugTake.setDrugName(newDrugTake.getDrugName() + "_modified_by_api");
+        drugRepo.save(newDrugTake);
 
         return newDrugTake;
     }
