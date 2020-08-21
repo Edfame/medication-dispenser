@@ -15,12 +15,7 @@ public class Administration implements Serializable {
     @EmbeddedId
     private AdministrationId administrationId;
 
-    @Column
-    @Temporal(TemporalType.TIMESTAMP)
-    private Calendar administrationTimestamp;
-
     public Administration(long drugId, long userId, Calendar administrationTimestamp) {
-        this.administrationId = new AdministrationId(drugId, userId);
-        this.administrationTimestamp = administrationTimestamp;
+        this.administrationId = new AdministrationId(drugId, userId, administrationTimestamp);
     }
 }
