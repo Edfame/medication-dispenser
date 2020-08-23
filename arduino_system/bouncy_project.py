@@ -14,7 +14,7 @@ class Controller:
 		self.api = configs.get("api")
 		self.user = identifications.get("user")
 		self.drugs = identifications.get("drugs")
-		
+
 
 # Load the configs from the file provided.
 def load_configs():
@@ -49,9 +49,9 @@ def write_new_data(timestamp, controller):
     obj ={
         "administrationId":{
         	"drugId": controller.drugs[0],
-        	"userId": controller.user.get("id")
-        },
-        "administrationTimestamp": timestamp
+        	"userId": controller.user.get("id"),
+        	"administrationTimestamp": timestamp
+        }
     }
 
     request = requests.post(controller.api, json=obj)
