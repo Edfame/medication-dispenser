@@ -1,12 +1,15 @@
 package me.medicationdispenser.api.models;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Data
-public class Drug {
+@NoArgsConstructor
+public class Drug implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -15,9 +18,9 @@ public class Drug {
 
     private String drugName;
 
-    public Drug(String drugname) {
+    public Drug(String drugName) {
 
-        this.drugName = drugname;
+        this.drugName = drugName;
 
     }
 }

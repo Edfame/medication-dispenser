@@ -4,6 +4,7 @@ import me.medicationdispenser.api.models.Drug;
 import me.medicationdispenser.api.repositories.DrugRepository;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -16,17 +17,48 @@ public class DrugController {
         this.drugRepo = drugRepository;
     }
 
-    @GetMapping("/get_drug")
-    public Optional<Drug> getDrug(@RequestBody Drug drug) {
+    @GetMapping("/get_all_drugs")
+    public List<Drug> getAllDrugs() {
 
-        return drugRepo.findById(drug.getDrugId());
+        return drugRepo.findAll();
     }
 
-    @PostMapping("/new_take")
-    public Drug newTake(@RequestBody Drug newDrugTake) {
+    @GetMapping("/get_drug")
+    public Optional<Drug> getDrug(@RequestBody Long drugId) {
 
-        drugRepo.save(newDrugTake);
+        return drugRepo.findById(drugId);
+    }
 
-        return newDrugTake;
+    @PostMapping("/new_drug")
+    public Drug newDrug(@RequestBody Drug drug) {
+
+        if (drugRepo.findAllByDrugName(drug.getDrugName()).isPresent()) {
+
+            return null;
+
+        } else {
+
+            return drugRepo.save(drug);
+        }
+    }
+
+    @PutMapping("/edit_drug")
+    public Drug editDrug(@RequestBody Drug drug) {
+
+        drugRepo.findById(drug.getDrugId()).ifPresent(
+                toEdit -> {
+                    drugRepo.save(drug);
+                }
+        );
+
+        return drug;
+    }
+
+    @DeleteMapping("/delete_drug")
+    public Drug deleteDrug(@RequestBody Drug drug) {
+
+        drugRepo.delete(drug);
+
+        return drug;
     }
 }

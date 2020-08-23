@@ -13,9 +13,13 @@ import java.util.Calendar;
 public class Administration implements Serializable {
 
     @EmbeddedId
-    private AdministrationId administrationId;
+    private AdministrationIdentification administrationIdentification;
 
     public Administration(long drugId, long userId, Calendar administrationTimestamp) {
-        this.administrationId = new AdministrationId(drugId, userId, administrationTimestamp);
+        this.administrationIdentification = new AdministrationIdentification(drugId, userId, administrationTimestamp);
+    }
+
+    public Administration(AdministrationIdentification administrationIdentification) {
+        this.administrationIdentification = administrationIdentification;
     }
 }

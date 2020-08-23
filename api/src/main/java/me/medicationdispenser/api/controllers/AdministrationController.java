@@ -1,8 +1,10 @@
 package me.medicationdispenser.api.controllers;
 
 import me.medicationdispenser.api.models.Administration;
-import me.medicationdispenser.api.models.AdministrationId;
+import me.medicationdispenser.api.models.AdministrationIdentification;
 import me.medicationdispenser.api.repositories.AdministrationRepository;
+import me.medicationdispenser.api.repositories.DrugRepository;
+import me.medicationdispenser.api.repositories.UserRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,29 +14,54 @@ import java.util.List;
 public class AdministrationController {
 
     private final AdministrationRepository administrationRepository;
+    private final DrugRepository drugRepository;
+    private final UserRepository userRepository;
 
-    public AdministrationController(AdministrationRepository administrationRepository) {
+    public AdministrationController(AdministrationRepository administrationRepository, DrugRepository drugRepository, UserRepository userRepository) {
         this.administrationRepository = administrationRepository;
+        this.drugRepository = drugRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/get_administrations")
-    public List<Administration> getAdministrationByDrugAndUser(@RequestBody AdministrationId administrationId) {
+    public List<Administration> getAdministrationByDrugAndUser(@RequestBody AdministrationIdentification administrationIdentification) {
 
-        return administrationRepository.findAllByAdministrationId_DrugIdAndAdministrationId_UserId(administrationId.getDrugId(), administrationId.getUserId());
+        return administrationRepository.findAllByAdministrationIdentification_DrugIdAndAdministrationIdentification_UserId(administrationIdentification.getDrugId(), administrationIdentification.getUserId());
     }
 
     @GetMapping("/get_user_administrations")
-    public List<Administration> getAdministrationByUser(@RequestBody AdministrationId administrationId) {
+    public List<Administration> getAdministrationByUser(@RequestBody AdministrationIdentification administrationIdentification) {
 
-        return administrationRepository.findAllByAdministrationId_UserId(administrationId.getUserId());
+        return administrationRepository.findAllByAdministrationIdentification_UserId(administrationIdentification.getUserId());
     }
 
     @PostMapping("/new_administration")
-    public Administration registerAdministration(@RequestBody Administration administration) {
+    public Administration registerAdministration(@RequestBody AdministrationIdentification administrationIdentification) {
 
-        administrationRepository.save(administration);
+        if(administrationRepository.findById(administrationIdentification).isEmpty()) {
 
-        return administration;
+            if (drugRepository.findById(administrationIdentification.getDrugId()).isPresent() &&
+                userRepository.findById(administrationIdentification.getUserId()).isPresent()) {
+
+                Administration toAdd = new Administration(administrationIdentification);
+
+                administrationRepository.save(toAdd);
+
+                return toAdd;
+
+            } else {
+
+                //Either the user or the drug doesn't exist.
+                return null;
+
+            }
+
+        } else {
+
+            //The administration tuple already exists.
+            return null;
+
+        }
     }
 
     @PutMapping("/update_administration")
@@ -46,9 +73,9 @@ public class AdministrationController {
     }
 
     @DeleteMapping("/delete_user_administrations")
-    public List<Administration> deleteUserAdministrations(@RequestBody AdministrationId administrationId) {
+    public List<Administration> deleteUserAdministrations(@RequestBody AdministrationIdentification administrationIdentification) {
 
-        List userAdministrations = administrationRepository.findAllByAdministrationId_UserId(administrationId.getUserId());
+        List userAdministrations = administrationRepository.findAllByAdministrationIdentification_UserId(administrationIdentification.getUserId());
 
         administrationRepository.deleteAll(userAdministrations);
 

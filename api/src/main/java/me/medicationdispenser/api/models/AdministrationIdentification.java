@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.Calendar;
 
 @Embeddable
-public class AdministrationId implements Serializable {
+public class AdministrationIdentification implements Serializable {
 
     @Column
     private long drugId;
@@ -20,11 +20,11 @@ public class AdministrationId implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Calendar administrationTimestamp;
 
-    public AdministrationId() {
+    public AdministrationIdentification() {
 
     }
 
-    public AdministrationId(long drugId, long userId, Calendar administrationTimestamp) {
+    public AdministrationIdentification(long drugId, long userId, Calendar administrationTimestamp) {
         this.drugId = drugId;
         this.userId = userId;
         this.administrationTimestamp = administrationTimestamp;
@@ -58,9 +58,9 @@ public class AdministrationId implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof AdministrationId)) return false;
+        if (!(o instanceof AdministrationIdentification)) return false;
 
-        AdministrationId that = (AdministrationId) o;
+        AdministrationIdentification that = (AdministrationIdentification) o;
 
         if (getDrugId() != that.getDrugId()) return false;
         return getUserId() == that.getUserId();
