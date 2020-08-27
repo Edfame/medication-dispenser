@@ -8,6 +8,7 @@ import me.medicationdispenser.api.repositories.UserRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -23,14 +24,14 @@ public class AdministrationController {
         this.userRepository = userRepository;
     }
 
-    @GetMapping("/get_administrations")
-    public List<Administration> getAdministrationByDrugAndUser(@RequestBody AdministrationIdentification administrationIdentification) {
+    @GetMapping("/administrations")
+    public List<Administration> getAdministrations(@RequestBody AdministrationIdentification administrationIdentification) {
 
         return administrationRepository.findAllByAdministrationIdentification_DrugIdAndAdministrationIdentification_UserId(administrationIdentification.getDrugId(), administrationIdentification.getUserId());
     }
 
-    @GetMapping("/get_user_administrations")
-    public List<Administration> getAdministrationByUser(@RequestBody AdministrationIdentification administrationIdentification) {
+    @GetMapping("/administration")
+    public List<Administration> getAdministration(@RequestBody AdministrationIdentification administrationIdentification) {
 
         if(userRepository.findById(administrationIdentification.getUserId()).isPresent()) {
 
@@ -44,19 +45,19 @@ public class AdministrationController {
         }
     }
 
-    @PostMapping("/new_administration")
-    public Administration registerAdministration(@RequestBody AdministrationIdentification administrationIdentification) {
+    @PostMapping("/administration")
+    public Administration postAdministration(@RequestBody AdministrationIdentification administrationIdentification) {
 
         if(administrationRepository.findById(administrationIdentification).isEmpty()) {
 
             if (drugRepository.findById(administrationIdentification.getDrugId()).isPresent() &&
                 userRepository.findById(administrationIdentification.getUserId()).isPresent()) {
 
-                Administration toAdd = new Administration(administrationIdentification);
+                Administration toPost = new Administration(administrationIdentification);
 
-                administrationRepository.save(toAdd);
+                administrationRepository.save(toPost);
 
-                return toAdd;
+                return toPost;
 
             } else {
 
@@ -73,16 +74,15 @@ public class AdministrationController {
         }
     }
 
-    @PutMapping("/update_administration")
-    public Administration updateAdministration(@RequestBody Administration administration) {
+    @PutMapping("/administration")
+    public AdministrationIdentification putAdministration(@RequestBody AdministrationIdentification administrationIdentification) {
 
-        administrationRepository.save(administration);
-
-        return administration;
+        //Does nothing so far.
+        return null;
     }
 
-    @DeleteMapping("/delete_user_administrations")
-    public List<Administration> deleteUserAdministrations(@RequestBody AdministrationIdentification administrationIdentification) {
+    @DeleteMapping("/administration")
+    public List<Administration> deleteAdministrations(@RequestBody AdministrationIdentification administrationIdentification) {
 
         List userAdministrations = administrationRepository.findAllByAdministrationIdentification_UserId(administrationIdentification.getUserId());
 

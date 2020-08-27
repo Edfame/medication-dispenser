@@ -17,20 +17,20 @@ public class DrugController {
         this.drugRepo = drugRepository;
     }
 
-    @GetMapping("/get_all_drugs")
+    @GetMapping("/drugs")
     public List<Drug> getAllDrugs() {
 
         return drugRepo.findAll();
     }
 
-    @GetMapping("/get_drug")
+    @GetMapping("/drug")
     public Optional<Drug> getDrug(@RequestBody Long drugId) {
 
         return drugRepo.findById(drugId);
     }
 
-    @PostMapping("/new_drug")
-    public Drug newDrug(@RequestBody Drug drug) {
+    @PostMapping("/drug")
+    public Drug postDrug(@RequestBody Drug drug) {
 
         if (drugRepo.findAllByDrugName(drug.getDrugName()).isPresent()) {
 
@@ -42,8 +42,8 @@ public class DrugController {
         }
     }
 
-    @PutMapping("/edit_drug")
-    public Drug editDrug(@RequestBody Drug drug) {
+    @PutMapping("/drug")
+    public Drug putDrug(@RequestBody Drug drug) {
 
         drugRepo.findById(drug.getDrugId()).ifPresent(
                 toEdit -> {
@@ -54,7 +54,7 @@ public class DrugController {
         return drug;
     }
 
-    @DeleteMapping("/delete_drug")
+    @DeleteMapping("/drug")
     public Drug deleteDrug(@RequestBody Drug drug) {
 
         drugRepo.delete(drug);

@@ -17,22 +17,22 @@ public class DrugUserController {
         this.userRepository = userRepository;
     }
 
-    @GetMapping("/get_all_users")
+    @GetMapping("/users")
     public List<DrugUser> getAllUsers() {
 
         return userRepository.findAll();
 
     }
 
-    @GetMapping("/get_user")
+    @GetMapping("/user")
     public Optional<DrugUser> getUser(@RequestBody Long drugUserId) {
 
         return userRepository.findById(drugUserId);
 
     }
 
-    @PostMapping("/new_user")
-    public DrugUser newUser(@RequestBody String drugUserName) {
+    @PostMapping("/user")
+    public DrugUser postUser(@RequestBody String drugUserName) {
 
         DrugUser toAdd = new DrugUser(drugUserName);
 
@@ -42,8 +42,8 @@ public class DrugUserController {
 
     }
 
-    @PutMapping("/edit_user")
-    public DrugUser editUser(@RequestBody DrugUser drugUser) {
+    @PutMapping("/user")
+    public DrugUser postUser(@RequestBody DrugUser drugUser) {
 
         if (userRepository.findById(drugUser.getDrugUserId()).isPresent()) {
 
@@ -59,7 +59,7 @@ public class DrugUserController {
         }
     }
 
-    @DeleteMapping("/delete_user")
+    @DeleteMapping("/user")
     public Optional<DrugUser> deleteUser(@RequestBody Long drugUserId) {
 
         if (userRepository.findById(drugUserId).isPresent()) {
