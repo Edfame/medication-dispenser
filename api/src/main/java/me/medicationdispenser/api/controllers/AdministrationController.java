@@ -32,7 +32,16 @@ public class AdministrationController {
     @GetMapping("/get_user_administrations")
     public List<Administration> getAdministrationByUser(@RequestBody AdministrationIdentification administrationIdentification) {
 
-        return administrationRepository.findAllByAdministrationIdentification_UserId(administrationIdentification.getUserId());
+        if(userRepository.findById(administrationIdentification.getUserId()).isPresent()) {
+
+            return administrationRepository.findAllByAdministrationIdentification_UserId(administrationIdentification.getUserId());
+
+        } else {
+
+            //User doesn't exist.
+            return null;
+
+        }
     }
 
     @PostMapping("/new_administration")
