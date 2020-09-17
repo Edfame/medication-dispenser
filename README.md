@@ -1,6 +1,6 @@
 # Medication Dispenser
 
-A simple way to track your medication using and API and an Arduino. :smile:
+A simple way to track your medication using an API and an Arduino. :smile:
 
 - [x] Started the project. :heavy_check_mark:
 - [x] Arduino System do dispense medication. :heavy_check_mark:
