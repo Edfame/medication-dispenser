@@ -8,7 +8,7 @@
 //Consts
 #define CLOSED_ANGLE 0
 #define OPENED_ANGLE 90
-#define OPENED_DELAY 1000
+#define OPENED_DELAY 500
 #define LOOP_DELAY 10
 
 int button_status = -1;
