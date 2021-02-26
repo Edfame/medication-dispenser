@@ -8,7 +8,6 @@ import me.medicationdispenser.api.repositories.UserRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -24,7 +23,7 @@ public class AdministrationController {
         this.userRepository = userRepository;
     }
 
-    @GetMapping("/administrations")
+    @PostMapping("/administrations")
     public List<Administration> getAdministrations(@RequestBody AdministrationIdentification administrationIdentification) {
 
         return administrationRepository.findAllByAdministrationIdentification_DrugIdAndAdministrationIdentification_UserId(administrationIdentification.getDrugId(), administrationIdentification.getUserId());
