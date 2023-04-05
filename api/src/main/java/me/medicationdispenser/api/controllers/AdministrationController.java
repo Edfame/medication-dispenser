@@ -8,7 +8,6 @@ import me.medicationdispenser.api.repositories.UserRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -84,7 +83,7 @@ public class AdministrationController {
     @DeleteMapping("/administration")
     public List<Administration> deleteAdministrations(@RequestBody AdministrationIdentification administrationIdentification) {
 
-        List userAdministrations = administrationRepository.findAllByAdministrationIdentification_UserId(administrationIdentification.getUserId());
+        List<Administration> userAdministrations = administrationRepository.findAllByAdministrationIdentification_UserId(administrationIdentification.getUserId());
 
         administrationRepository.deleteAll(userAdministrations);
 
