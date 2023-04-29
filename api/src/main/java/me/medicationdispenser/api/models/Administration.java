@@ -5,21 +5,24 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Calendar;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
 @NoArgsConstructor
+@Table(name = "administrations")
 public class Administration implements Serializable {
 
-    @EmbeddedId
-    private AdministrationIdentification administrationIdentification;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "administration_id", nullable = false, updatable = false)
+    private Long id;
 
-    public Administration(long drugId, long userId, Calendar administrationTimestamp) {
-        this.administrationIdentification = new AdministrationIdentification(drugId, userId, administrationTimestamp);
-    }
+    @ManyToOne
+    @JoinColumn(name = "prescription_id", referencedColumnName = "prescription_id")
+    private Prescription prescription;
 
-    public Administration(AdministrationIdentification administrationIdentification) {
-        this.administrationIdentification = administrationIdentification;
-    }
+    @Column(name = "administration_date")
+    private LocalDateTime administerDate;
+
 }

@@ -8,21 +8,30 @@ import javax.persistence.*;
 @Entity
 @Data
 @NoArgsConstructor
+@Table(name = "prescriptions")
 public class Prescription {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false, updatable = false)
-    private long prescriptionId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "prescription_id", nullable = false, updatable = false)
+    private Long id;
 
-    private long drugId;
-    private long userId;
-    private int prescriptionPeriodicity;
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    private User user;
 
-    public Prescription(long drugId, long userId, int prescriptionPeriodicity) {
-        this.drugId = drugId;
-        this.userId = userId;
-        this.prescriptionPeriodicity = prescriptionPeriodicity;
+    @ManyToOne
+    @JoinColumn(name = "medicine_id", referencedColumnName = "medicine_id")
+    private Medicine medicine;
+
+    @Column(name = "prescription_daily_dose")
+    private int dailyDose;
+
+    public Prescription(User user, Medicine medicine, int dailyDose) {
+
+        this.user = user;
+        this.medicine = medicine;
+        this.dailyDose = dailyDose;
 
     }
 }
