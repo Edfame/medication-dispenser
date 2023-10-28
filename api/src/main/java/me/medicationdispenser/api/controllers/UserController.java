@@ -1,13 +1,20 @@
 package me.medicationdispenser.api.controllers;
 
+import java.util.List;
+import java.util.Optional;
 import me.medicationdispenser.api.models.User;
 import me.medicationdispenser.api.repositories.UserRepository;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -26,11 +33,12 @@ public class UserController {
 
     }
 
-    @GetMapping("/user")
-    public User getUser(@RequestBody Long id) {
+    @GetMapping("/user/{id}")
+    public User getUser(@PathVariable Long id) {
 
         return userRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+                             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                                                            "no user found with id " + id));
 
     }
 
@@ -44,7 +52,8 @@ public class UserController {
     @PutMapping("/user")
     public User putUser(@RequestBody User user) {
 
-        if (userRepository.findById(user.getId()).isPresent()) {
+        if (userRepository.findById(user.getId())
+                          .isPresent()) {
 
             userRepository.save(user);
             return user;
@@ -52,7 +61,7 @@ public class UserController {
         } else {
 
             //No user found to update.
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "no user found with id " + user.getId());
 
         }
     }
@@ -60,7 +69,8 @@ public class UserController {
     @DeleteMapping("/user")
     public Optional<User> deleteUser(@RequestBody Long userId) {
 
-        if (userRepository.findById(userId).isPresent()) {
+        if (userRepository.findById(userId)
+                          .isPresent()) {
 
             Optional<User> toRemove = userRepository.findById(userId);
             userRepository.deleteById(userId);
@@ -70,7 +80,7 @@ public class UserController {
         } else {
 
             //No user found to delete.
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "no user found with id " + userId);
 
         }
     }

@@ -1,38 +1,30 @@
 package me.medicationdispenser.api.models;
 
+import java.io.Serializable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
-import java.io.Serializable;
 
 @Entity
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "medicines")
 public class Medicine implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "medicine_id", nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false)
     private Long id;
-
-    @Column(name = "medicine_name")
     private String name;
-
-     @Column(name = "medicine_dose")
     private int dose;
 
-    public Medicine(String name) {
-
-        this.name = name;
-
-    }
-
-    public Medicine(String name, int dose) {
-
-        this.name = name;
-        this.dose = dose;
-
-    }
 }

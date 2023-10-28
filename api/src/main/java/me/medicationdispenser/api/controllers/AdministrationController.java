@@ -1,5 +1,7 @@
 package me.medicationdispenser.api.controllers;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import me.medicationdispenser.api.models.Administration;
 import me.medicationdispenser.api.models.Prescription;
 import me.medicationdispenser.api.repositories.AdministrationRepository;
@@ -7,10 +9,15 @@ import me.medicationdispenser.api.repositories.MedicineRepository;
 import me.medicationdispenser.api.repositories.PrescriptionRepository;
 import me.medicationdispenser.api.repositories.UserRepository;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -21,49 +28,69 @@ public class AdministrationController {
     private final UserRepository userRepository;
     private final PrescriptionRepository prescriptionRepository;
 
-    public AdministrationController(AdministrationRepository administrationRepository, MedicineRepository medicineRepository, UserRepository userRepository, PrescriptionRepository prescriptionRepository) {
+    public AdministrationController(AdministrationRepository administrationRepository,
+                                    MedicineRepository medicineRepository, UserRepository userRepository,
+                                    PrescriptionRepository prescriptionRepository) {
         this.administrationRepository = administrationRepository;
         this.medicineRepository = medicineRepository;
         this.userRepository = userRepository;
         this.prescriptionRepository = prescriptionRepository;
     }
 
-    @GetMapping("/administrationsByPrescription")
-    public List<Administration> getAdministrationsByPrescription(@RequestBody Prescription prescription) {
+    @GetMapping("/administrations/ByPrescriptionId/{id}")
+    public List<Administration> getAdministrationsByPrescription(@PathVariable Long id) {
 
-        Long prescriptionId = prescription.getId();
-        prescriptionRepository.findById(prescriptionId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "prescription not found"));
+        prescriptionRepository.findById(id)
+                              .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                                                             "no prescription found with id " +
+                                                                                 id));
 
-        return administrationRepository.findAllByPrescriptionId(prescriptionId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "administrations not found"));
-
-    }
-
-    @GetMapping("/administrationsByUserId")
-    public List<Administration> getAdministrationsByUserId(@RequestBody Long userId) {
-
-        List<Prescription> prescriptions = prescriptionRepository.findAllByUserId(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found"));
-        return administrationRepository.findAllByPrescriptionId(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "administrations not found"));
+        return administrationRepository.findAllByPrescriptionId(id)
+                                       .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                                                                      "no administrations found for prescriptionId " +
+                                                                                          id));
 
     }
 
-    @GetMapping("/administration")
-    public List<Administration> getAdministration(@RequestBody Long id) {
+    @GetMapping("/administrations/ByUserId/{id}")
+    public List<Administration> getAdministrationsByUserId(@PathVariable Long id) {
 
-        return administrationRepository.findAllById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "administrations not found"));
+        userRepository.findById(id)
+                      .orElseThrow(
+                          () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "no user found with id " + id));
+
+        return administrationRepository.findAllByPrescriptionId(id)
+                                       .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                                                                      "no administrations found for id " +
+                                                                                          id));
+
+    }
+
+    @GetMapping("/administration/{id}")
+    public List<Administration> getAdministration(@PathVariable Long id) {
+
+        return administrationRepository.findAllById(id)
+                                       .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                                                                      "no administrations found for id " +
+                                                                                          id));
 
     }
 
     @PostMapping("/administration")
     public Administration postAdministration(@RequestBody Administration administration) {
 
-        Long prescriptionId = administration.getPrescription().getId();
-        prescriptionRepository.findById(prescriptionId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "prescription not found"));
+        Long prescriptionId = administration.getPrescription()
+                                            .getId();
+        Prescription administrationPrescription = prescriptionRepository.findById(prescriptionId)
+                                                                        .orElseThrow(() -> new ResponseStatusException(
+                                                                            HttpStatus.NOT_FOUND,
+                                                                            "no prescription found with id " +
+                                                                                prescriptionId));
+        administration.setPrescription(administrationPrescription);
 
-        Long userId = administration.getPrescription().getUser().getId();
-        userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found"));
-
-        Long medicineId = administration.getPrescription().getMedicine().getId();
-        medicineRepository.findById(medicineId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "medicine not found"));
+        if (administration.getAdministerDate() == null) {
+            administration.setAdministerDate(LocalDateTime.now());
+        }
 
         administrationRepository.save(administration);
 
@@ -74,26 +101,34 @@ public class AdministrationController {
     @PutMapping("/administration")
     public Administration putAdministration(@RequestBody Administration administration) {
 
-        administrationRepository.findById(administration.getId()).ifPresent(x -> administrationRepository.save(administration));
+        administrationRepository.findById(administration.getId())
+                                .ifPresent(x -> administrationRepository.save(administration));
 
         return administration;
 
     }
 
-    @DeleteMapping("/administration")
-    public Administration deleteAdministration(@RequestBody Long id) {
+    @DeleteMapping("/administration/{id}")
+    public Administration deleteAdministration(@PathVariable Long id) {
 
-        Administration administration = administrationRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "administration not found"));
+        Administration administration = administrationRepository.findById(id)
+                                                                .orElseThrow(() -> new ResponseStatusException(
+                                                                    HttpStatus.NOT_FOUND,
+                                                                    "no administration found with id " + id));
 
         administrationRepository.delete(administration);
 
         return administration;
     }
 
-    @DeleteMapping("/administrationByUserId")
-    public List<Administration> deleteAdministrations(@RequestBody Long userId) {
+    @DeleteMapping("/administration/ByUserId/{id}")
+    public List<Administration> deleteAdministrations(@PathVariable Long id) {
 
-        List<Administration> administrations = administrationRepository.findAllByPrescriptionUserId(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "administrations not found"));
+        List<Administration> administrations = administrationRepository.findAllByPrescriptionUserId(id)
+                                                                       .orElseThrow(() -> new ResponseStatusException(
+                                                                           HttpStatus.NOT_FOUND,
+                                                                           "no administrations found for id " +
+                                                                               id));
 
         administrationRepository.deleteAll(administrations);
 
